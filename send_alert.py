@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, abort
 import requests
 import logging
 import os
@@ -10,8 +10,13 @@ log.setLevel(logging.ERROR)
 app = Flask(__name__)
 
 
-@app.route('/send/<int:chat_id>', methods=['POST'])
+@app.route('/send/<chat_id>', methods=['POST'])
 def send_data_telegram(chat_id):
+
+    try:
+        chat_id = int(chat_id)
+    except ValueError:
+        abort(404)
 
     try:
         all_alerts = request.get_json()
@@ -47,6 +52,6 @@ if __name__ == '__main__':
 
     token = os.getenv("TELEGRAM_TOKEN", "")
     if not token:
-        log.info("Env var TELEGRAM_TOKEN must be set, exit")
+        log.error("Env var TELEGRAM_TOKEN must be set, exit")
         exit(1)
     app.run()
