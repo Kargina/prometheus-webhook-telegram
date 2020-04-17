@@ -54,4 +54,5 @@ if __name__ == '__main__':
     if not token:
         log.error("Env var TELEGRAM_TOKEN must be set, exit")
         exit(1)
-    app.run()
+    port = os.getenv("LISTEN_PORT", 5000)
+    app.run(host='0.0.0.0', port=port)
